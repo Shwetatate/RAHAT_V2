@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block title %}Home — Rahat{% endblock %}
+
+{% block content %}
+
+<!-- ===================== SECTION 1 — HERO ===================== -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center g-4 g-lg-5">
+
+      <!-- Hero Left: Text -->
+      <div class="col-lg-6 order-2 order-lg-1 text-center text-lg-start">
+        <span class="hero-tag">AI Powered Farming 🤖</span>
+        <h1 class="hero-title">Smart Farming</h1>
+        <p class="hero-sub-hi mb-1">किसानों के लिए AI की शक्ती</p>
+        <p class="hero-sub-mr">शेतकऱ्यांसाठी AI ची शक्ती</p>
+        <p class="hero-desc mx-auto mx-lg-0">
+          Get crop recommendations, fertilizer suggestions and disease detection powered by AI
+        </p>
+        <div class="hero-actions justify-content-center justify-content-lg-start">
+          <a class="btn-hero-primary" href="{{ url_for('crop') }}">Get Started →</a>
+          <a class="btn-hero-secondary" href="#features">Learn More</a>
+        </div>
+      </div>
+      <!-- End Hero Left -->
+
+      <!-- Hero Right: Illustration -->
+      <div class="col-lg-6 order-1 order-lg-2 text-center">
+        <div class="hero-illustration" aria-hidden="true">
+          <span>🌾</span>
+          <span>👨‍🌾</span>
+          <span>🌱</span>
+        </div>
+      </div>
+      <!-- End Hero Right -->
+
+    </div>
+  </div>
+</section>
+<!-- ===================== END SECTION 1 — HERO ===================== -->
+
+
+<!-- ===================== SECTION 2 — FEATURE CARDS ===================== -->
+<section id="features" class="features-section">
+  <div class="container">
+
+    <!-- Section Header -->
+    <h2 class="features-heading text-center">What Rahat offers</h2>
+    <p class="features-sub text-center">राहत काय देते</p>
+
+    <!-- Cards Row -->
+    <div class="row g-4">
+
+      <!-- Card 1: Crop -->
+      <div class="col-md-4">
+        <article class="feature-card accent-green">
+          <div class="feature-icon-wrap icon-green">🌱</div>
+          <h3 class="feature-card-title">Crop Recommendation</h3>
+          <p class="feature-card-hi mb-2">पीक शिफारस</p>
+          <p>AI suggests the best crop based on your soil nutrients and real time weather</p>
+          <a class="btn-outline-feature btn-outline-green" href="{{ url_for('crop') }}">Try Now →</a>
+        </article>
+      </div>
+      <!-- End Card 1 -->
+
+      <!-- Card 2: Fertilizer -->
+      <div class="col-md-4">
+        <article class="feature-card accent-yellow">
+          <div class="feature-icon-wrap icon-yellow">💊</div>
+          <h3 class="feature-card-title">Fertilizer Suggestion</h3>
+          <p class="feature-card-hi mb-2">खत सुचवणी</p>
+          <p>Know exactly what fertilizer your soil needs for maximum yield</p>
+          <a class="btn-outline-feature btn-outline-yellow" href="{{ url_for('fertilizer') }}">Try Now →</a>
+        </article>
+      </div>
+      <!-- End Card 2 -->
+
+      <!-- Card 3: Disease -->
+      <div class="col-md-4">
+        <article class="feature-card accent-red">
+          <div class="feature-icon-wrap icon-red">🔬</div>
+          <h3 class="feature-card-title">Disease Detection</h3>
+          <p class="feature-card-hi mb-2">रोग ओळख</p>
+          <p>Upload a leaf photo and instantly detect plant disease with AI accuracy</p>
+          <a class="btn-outline-feature btn-outline-red" href="{{ url_for('disease') }}">Try Now →</a>
+        </article>
+      </div>
+      <!-- End Card 3 -->
+
+    </div>
+    <!-- End Cards Row -->
+
+  </div>
+</section>
+<!-- ===================== END SECTION 2 — FEATURE CARDS ===================== -->
+
+
+<!-- ===================== SECTION 3 — STATS ===================== -->
+<section id="stats" class="stats-section" aria-label="Rahat statistics">
+  <div class="container">
+    <div class="row justify-content-center">
+
+      <!-- Stat 1: Accuracy -->
+      <div class="col-12 col-md-6">
+        <div class="stat-item">
+          <div class="stat-number" data-stat="98.4" data-decimals="1" data-suffix="%">0%</div>
+          <div class="stat-label">Model Accuracy<br>मॉडेल अचूकता</div>
+        </div>
+      </div>
+
+      <!-- Stat 2: Diseases -->
+      <div class="col-12 col-md-6">
+        <div class="stat-item">
+          <div class="stat-number" data-stat="15" data-decimals="0" data-suffix="+">0+</div>
+          <div class="stat-label">Diseases Detected<br>रोग ओळखले</div>
+        </div>
+      </div>
+
+      
+<!-- ===================== END SECTION 3 — STATS ===================== -->
+
+
+<!-- ===================== SECTION 4 — CTA ===================== -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to grow smarter? 🌾</h2>
+    <p class="lead mb-0">Join thousands of farmers using AI</p>
+    <div class="mt-4">
+      <a class="btn-cta-green" href="{{ url_for('crop') }}">Start Now — It's Free</a>
+    </div>
+  </div>
+</section>
+<!-- ===================== END SECTION 4 — CTA ===================== -->
+
+{% endblock %}
+
+
+<!-- ===================== PAGE SCRIPTS ===================== -->
+{% block page_scripts %}
+<script>
+/* ----- Navbar hide/show on scroll ----- */
+(function () {
+  var nav = document.getElementById("rahat-navbar");
+  if (!nav) return;
+  var lastY = window.scrollY;
+  var ticking = false;
+  function onScroll() {
+    var y = window.scrollY;
+    nav.classList.toggle("navbar-scrolled", y > 10);
+    if (y > lastY && y > 100) {
+      nav.classList.add("navbar-hidden");
+    } else {
+      nav.classList.remove("navbar-hidden");
+    }
+    lastY = y;
+    ticking = false;
+  }
+  window.addEventListener("scroll", function () {
+    if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+  }, { passive: true });
+})();
+
+/* ----- Stats counter animation ----- */
+(function () {
+  var section = document.getElementById("stats");
+  if (!section) return;
+  var numbers = section.querySelectorAll(".stat-number");
+  var started = false;
+  var duration = 2000;
+
+  function formatValue(raw, decimals) {
+    return decimals > 0 ? raw.toFixed(decimals) : String(Math.round(raw));
+  }
+
+  function runCounters() {
+    started = true;
+    var start = performance.now();
+    var targets = [];
+    numbers.forEach(function (el) {
+      targets.push({
+        el: el,
+        end: parseFloat(el.getAttribute("data-stat")) || 0,
+        decimals: parseInt(el.getAttribute("data-decimals")) || 0,
+        suffix: el.getAttribute("data-suffix") || "",
+      });
+    });
+    function frame(now) {
+      var t = Math.min(1, (now - start) / duration);
+      var eased = t * (2 - t);
+      targets.forEach(function (item) {
+        item.el.textContent = formatValue(item.end * eased, item.decimals) + item.suffix;
+      });
+      if (t < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        targets.forEach(function (item) {
+          item.el.textContent = formatValue(item.end, item.decimals) + item.suffix;
+        });
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  if (!("IntersectionObserver" in window)) { runCounters(); return; }
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting && !started) { runCounters(); obs.disconnect(); }
+    });
+  }, { threshold: 0.25 });
+  obs.observe(section);
+})();
+
+/* ----- Feature cards reveal on scroll ----- */
+(function () {
+  var cards = document.querySelectorAll(".feature-card");
+  if (!cards.length) return;
+  if (!("IntersectionObserver" in window)) {
+    cards.forEach(function (c) { c.classList.add("revealed"); });
+    return;
+  }
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("revealed");
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: "0px 0px -10% 0px", threshold: 0.15 });
+  cards.forEach(function (c) { obs.observe(c); });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,471 @@
+{% extends "base.html" %}
+{% block title %}Plant Disease Detection — Rahat{% endblock %}
+
+
+{% block head_extra %}
+<style>
+
+  /* ===================== SECTION A — PAGE LAYOUT ===================== */
+  .disease-page {
+    padding: 3rem 0;
+    background: #F7FDF9;
+    min-height: 100vh;
+  }
+
+  .disease-header {
+    text-align: center;
+    margin-bottom: 2.25rem;
+  }
+
+  .disease-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1B4332;
+  }
+
+  .disease-header .hi {
+    font-size: 1.05rem;
+    color: #52B788;
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  }
+
+  .disease-header .sub {
+    color: #6c757d;
+    font-size: 0.92rem;
+  }
+  /* ===================== END SECTION A ===================== */
+
+
+  /* ===================== SECTION B — UPLOAD CARD ===================== */
+  .upload-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 4px 24px rgba(45, 106, 79, 0.10);
+  }
+
+  .upload-card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1B4332;
+    margin-bottom: 4px;
+  }
+
+  .upload-card-sub {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 20px;
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  }
+
+  /* Error alert */
+  .alert-rahat {
+    background: #FFF0F0;
+    border: 1px solid #FFCCCC;
+    color: #8B1A1A;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 0.88rem;
+  }
+  /* ===================== END SECTION B ===================== */
+
+
+  /* ===================== SECTION C — DROP ZONE ===================== */
+  .drop-zone {
+    border: 2px dashed #52B788;
+    background: #F0FFF4;
+    border-radius: 16px;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 0;
+  }
+
+  .drop-zone:hover,
+  .drop-zone.dragover {
+    border-color: #2D6A4F;
+    background: #E8F5E9;
+  }
+
+  .drop-zone-icon {
+    font-size: 60px;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .drop-zone-text {
+    font-weight: 600;
+    color: #2D6A4F;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .drop-zone-sub {
+    font-size: 0.82rem;
+    color: #74b89a;
+    margin-bottom: 2px;
+  }
+  /* ===================== END SECTION C ===================== */
+
+
+  /* ===================== SECTION D — IMAGE PREVIEW ===================== */
+  #preview-section {
+    display: none;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  #preview-img {
+    max-height: 250px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  #preview-filename {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 8px;
+  }
+  /* ===================== END SECTION D ===================== */
+
+
+  /* ===================== SECTION E — DETECT BUTTON ===================== */
+  .btn-detect {
+    display: block;
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+    background: #2D6A4F;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-detect:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+  }
+
+  .btn-detect:disabled {
+    background: #adb5bd;
+    cursor: not-allowed;
+  }
+  /* ===================== END SECTION E ===================== */
+
+
+  /* ===================== SECTION F — INFO PANEL (right column) ===================== */
+  .info-card {
+    background: #FFF0F0;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 4px 20px rgba(220, 53, 69, 0.07);
+  }
+
+  .info-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #7B2D2D;
+    margin-bottom: 4px;
+  }
+
+  .info-card-sub {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 16px;
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  }
+
+  /* Plant group */
+  .plant-group {
+    margin-bottom: 18px;
+  }
+
+  .plant-name {
+    font-weight: 700;
+    color: #2D6A4F;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+
+  .plant-conditions {
+    list-style: none;
+    padding-left: 12px;
+    margin: 0;
+  }
+
+  .plant-conditions li {
+    font-size: 0.82rem;
+    color: #555;
+    padding: 2px 0;
+  }
+
+  .plant-conditions li::before {
+    content: "· ";
+    color: #52B788;
+    font-weight: bold;
+  }
+
+  .total-badge {
+    display: inline-block;
+    background: #2D6A4F;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  /* ===================== END SECTION F ===================== */
+
+
+  /* ===================== SECTION G — TIPS CARD ===================== */
+  .tips-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px;
+    margin-top: 20px;
+    box-shadow: 0 2px 12px rgba(45, 106, 79, 0.08);
+    border-left: 4px solid #52B788;
+  }
+
+  .tips-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1B4332;
+    margin-bottom: 12px;
+  }
+
+  .tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.83rem;
+    color: #444;
+  }
+  /* ===================== END SECTION G ===================== */
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="disease-page">
+  <div class="container">
+
+    <!-- ===================== SECTION H — PAGE HEADER + BREADCRUMB ===================== -->
+    <nav class="rahat-breadcrumb" aria-label="breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span class="separator">›</span>
+      <span class="current">Disease Detection</span>
+    </nav>
+
+    <div class="disease-header">
+      <h1>Plant Disease Detection</h1>
+      <p class="hi">वनस्पती रोग ओळख</p>
+      <p class="sub">Upload a leaf photo to detect disease instantly</p>
+    </div>
+    <!-- ===================== END SECTION H ===================== -->
+
+
+    <div class="row g-4">
+
+      <!-- ===================== SECTION I — UPLOAD FORM COLUMN ===================== -->
+      <div class="col-lg-7">
+        <div class="upload-card">
+          <p class="upload-card-title">📸 Upload Leaf Image</p>
+          <p class="upload-card-sub">पानाचा फोटो अपलोड करा</p>
+
+          <!-- Error alert -->
+          {% if error %}
+          <div class="alert-rahat">⚠️ {{ error }}</div>
+          {% endif %}
+
+          <form action="{{ url_for('disease') }}" method="POST"
+                enctype="multipart/form-data" id="diseaseForm">
+
+            <!-- Hidden file input (opened by label click) -->
+            <input type="file" id="leafInput" name="leaf_image"
+                   accept=".jpg,.jpeg,.png" style="display:none;">
+
+            <!-- Drop zone (label natively opens file picker on click) -->
+            <label for="leafInput" class="drop-zone" id="dropZone">
+              <div class="drop-zone-icon">📸</div>
+              <p class="drop-zone-text">Drag & drop your leaf image here</p>
+              <p class="drop-zone-sub">or click to browse</p>
+              <p class="drop-zone-sub">Supports: JPG, PNG, JPEG</p>
+            </label>
+
+            <!-- Image preview (shown after file selected) -->
+            <div id="preview-section">
+              <img id="preview-img" src="#" alt="Preview">
+              <p id="preview-filename"></p>
+            </div>
+
+            <!-- Submit button (disabled until image selected) -->
+            <button type="submit" class="btn-detect"
+                    id="detectBtn" disabled>
+              🔬 Detect Disease
+            </button>
+
+          </form>
+        </div>
+      </div>
+      <!-- ===================== END SECTION I ===================== -->
+
+
+      <!-- ===================== SECTION J — INFO + TIPS COLUMN ===================== -->
+      <div class="col-lg-5">
+
+        <!-- Supported plants card -->
+        <div class="info-card">
+          <p class="info-card-title">Supported Plants</p>
+          <p class="info-card-sub">समर्थित वनस्पती</p>
+
+          <!-- Pepper -->
+          <div class="plant-group">
+            <p class="plant-name">🫑 Pepper (Bell Pepper)</p>
+            <ul class="plant-conditions">
+              <li>Bacterial Spot</li>
+              <li>Healthy</li>
+            </ul>
+          </div>
+
+          <!-- Potato -->
+          <div class="plant-group">
+            <p class="plant-name">🥔 Potato</p>
+            <ul class="plant-conditions">
+              <li>Early Blight</li>
+              <li>Late Blight</li>
+              <li>Healthy</li>
+            </ul>
+          </div>
+
+          <!-- Tomato -->
+          <div class="plant-group">
+            <p class="plant-name">🍅 Tomato</p>
+            <ul class="plant-conditions">
+              <li>Bacterial Spot</li>
+              <li>Early Blight</li>
+              <li>Late Blight</li>
+              <li>Leaf Mold</li>
+              <li>Septoria Leaf Spot</li>
+              <li>Spider Mites (Two-spotted)</li>
+              <li>Target Spot</li>
+              <li>Yellow Leaf Curl Virus</li>
+              <li>Mosaic Virus</li>
+              <li>Healthy</li>
+            </ul>
+          </div>
+
+          <span class="total-badge">15 conditions detected</span>
+        </div>
+
+        <!-- Tips card -->
+        <div class="tips-card">
+          <p class="tips-title">
+            For best results
+            <span style="font-weight:400; color:#888; font-size:0.8rem;">
+              / चांगल्या परिणामांसाठी
+            </span>
+          </p>
+          <div class="tip-item">📸 <span>Take clear, well-lit photos</span></div>
+          <div class="tip-item">🍃 <span>Focus on the affected leaf area</span></div>
+          <div class="tip-item">📐 <span>Keep leaf centered in the frame</span></div>
+          <div class="tip-item">🌿 <span>Use a single leaf if possible</span></div>
+        </div>
+
+      </div>
+      <!-- ===================== END SECTION J ===================== -->
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+<!-- ===================== SECTION K — DRAG & DROP + PREVIEW JAVASCRIPT ===================== -->
+{% block page_scripts %}
+<script>
+(function () {
+
+  var dropZone        = document.getElementById('dropZone');
+  var leafInput       = document.getElementById('leafInput');
+  var detectBtn       = document.getElementById('detectBtn');
+  var previewSection  = document.getElementById('preview-section');
+  var previewImg      = document.getElementById('preview-img');
+  var previewFilename = document.getElementById('preview-filename');
+
+  /* --- Prevent browser opening dragged files in a new tab --- */
+  document.addEventListener('dragover', function (e) { e.preventDefault(); });
+  document.addEventListener('drop',     function (e) { e.preventDefault(); });
+
+  /* --- Drag visual feedback on drop zone --- */
+  ['dragenter', 'dragover'].forEach(function (evt) {
+    dropZone.addEventListener(evt, function (e) {
+      e.preventDefault(); e.stopPropagation();
+      dropZone.classList.add('dragover');
+    });
+  });
+
+  ['dragleave', 'dragend'].forEach(function (evt) {
+    dropZone.addEventListener(evt, function (e) {
+      e.preventDefault(); e.stopPropagation();
+      dropZone.classList.remove('dragover');
+    });
+  });
+
+  /* --- Handle file dropped onto drop zone --- */
+  dropZone.addEventListener('drop', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    dropZone.classList.remove('dragover');
+    var files = e.dataTransfer.files;
+    if (files.length) {
+      var dt = new DataTransfer();
+      dt.items.add(files[0]);
+      leafInput.files = dt.files;
+      showPreview(files[0]);
+    }
+  });
+
+  /* --- Handle file selected via file picker --- */
+  leafInput.addEventListener('change', function () {
+    if (this.files.length) showPreview(this.files[0]);
+  });
+
+  /* --- Show image preview and enable submit button --- */
+  function showPreview(file) {
+    var allowed = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!allowed.includes(file.type)) {
+      alert('Please upload a JPG or PNG image.');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      previewImg.src              = ev.target.result;
+      previewFilename.textContent = '📄 ' + file.name;
+      previewSection.style.display = 'block';
+      detectBtn.disabled           = false;
+    };
+    reader.readAsDataURL(file);
+  }
+
+})();
+</script>
+{% endblock %}
+<!-- ===================== END SECTION K ===================== -->

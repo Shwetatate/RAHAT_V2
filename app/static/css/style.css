@@ -1,0 +1,661 @@
+/* ===================== DESIGN TOKENS ===================== */
+:root {
+  --primary-green:  #2d6a4f;
+  --light-green:    #52b788;
+  --yellow:         #f4a261;
+  --cream:          #fefae0;
+  --dark:           #1b1b1b;
+  --white:          #ffffff;
+  --stats-bg:       #1b4332;
+  --shadow-sm:      0 2px 12px rgba(27,27,27,0.08);
+  --shadow-md:      0 8px 30px rgba(0,0,0,0.10);
+  --shadow-lg:      0 18px 45px rgba(0,0,0,0.16);
+  --radius-pill:    999px;
+  --radius-card:    20px;
+  --transition:     0.2s ease;
+}
+
+
+/* ===================== BASE ===================== */
+html {
+  scroll-behavior: smooth;
+}
+
+#features,
+#stats {
+  scroll-margin-top: 5.5rem;
+}
+
+body {
+  font-family: "Poppins", "Noto Sans Devanagari", system-ui, sans-serif;
+  color: var(--dark);
+  background-color: var(--white);
+  padding-top: 4.75rem;
+}
+
+/* Devanagari text spans in navbar */
+.devanagari {
+  font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  font-size: 0.9em;
+}
+
+
+/* ===================== NAVBAR ===================== */
+.rahat-navbar {
+  background-color: var(--cream) !important;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.35s ease, box-shadow 0.25s ease,
+              backdrop-filter 0.3s ease, background 0.3s ease;
+  z-index: 1030;
+}
+
+/* Hide navbar on scroll down */
+.rahat-navbar.navbar-hidden {
+  transform: translateY(-100%);
+  box-shadow: none;
+}
+
+/* Frosted glass on scroll */
+.rahat-navbar.navbar-scrolled {
+  backdrop-filter: blur(10px);
+  background: rgba(254, 250, 224, 0.95) !important;
+}
+
+/* Logo */
+.rahat-logo {
+  color: var(--primary-green) !important;
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+}
+
+.rahat-logo .logo-icon {
+  font-size: 1.5rem;
+}
+
+/* Nav links */
+.rahat-navbar .nav-link {
+  color: var(--dark);
+  font-weight: 500;
+  padding: 0.5rem 0.75rem !important;
+  position: relative;
+  transition: color var(--transition);
+}
+
+.rahat-navbar .nav-link:hover {
+  color: var(--primary-green);
+}
+
+.rahat-navbar .nav-link.active {
+  color: var(--primary-green);
+}
+
+/* Green underline on active link */
+.rahat-navbar .nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.2rem;
+  height: 3px;
+  background-color: var(--primary-green);
+  border-radius: 2px;
+}
+
+/* Mobile toggler */
+.navbar-toggler {
+  border-color: rgba(45, 106, 79, 0.35);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(45, 106, 79, 0.2);
+}
+
+
+/* ===================== FOOTER ===================== */
+.rahat-footer {
+  background-color: var(--cream);
+  color: var(--dark);
+  border-top: 1px solid rgba(45, 106, 79, 0.12);
+}
+
+.rahat-footer p {
+  font-size: 0.875rem;
+}
+
+
+/* ===================== HERO ===================== */
+.hero-section {
+  height: 90vh;
+  min-height: 90vh;
+  width: 100%;
+  background: linear-gradient(135deg, #2d6a4f 0%, #52b788 100%);
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+/* Badge pill above title */
+.hero-tag {
+  display: inline-block;
+  background: rgba(254, 250, 224, 0.2);
+  color: var(--cream);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(254, 250, 224, 0.35);
+  margin-bottom: 1.25rem;
+}
+
+.hero-title {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.hero-sub-hi,
+.hero-sub-mr {
+  font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  font-size: 1.25rem;
+  color: var(--yellow);
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+.hero-sub-hi { font-size: 1.375rem; }
+
+.hero-desc {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.05rem;
+  max-width: 32rem;
+  line-height: 1.65;
+  margin-bottom: 1.75rem;
+}
+
+/* Hero CTA buttons row */
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.btn-hero-primary {
+  background-color: var(--yellow);
+  color: var(--dark);
+  font-weight: 600;
+  padding: 0.65rem 1.5rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--yellow);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.btn-hero-primary:hover {
+  color: var(--dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.btn-hero-secondary {
+  background: transparent;
+  color: var(--white);
+  font-weight: 600;
+  padding: 0.65rem 1.5rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--white);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: background var(--transition), color var(--transition);
+}
+
+.btn-hero-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--white);
+}
+
+/* Floating emoji illustration */
+.hero-illustration {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: nowrap;
+  line-height: 1;
+  animation: float 3s ease-in-out infinite;
+  z-index: 0;
+}
+
+.hero-illustration::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 350px;
+  height: 350px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(18px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-illustration span {
+  font-size: 80px;
+  display: inline-block;
+}
+
+@media (max-width: 991.98px) {
+  .hero-illustration { max-width: 420px; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-15px); }
+}
+
+
+/* ===================== FEATURE CARDS ===================== */
+.features-section {
+  padding: 4rem 0;
+  background-color: #f8f9fa;
+  background-image: radial-gradient(#2D6A4F22 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.features-heading {
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 0.35rem;
+}
+
+.features-sub {
+  font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  color: var(--primary-green);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 2.5rem;
+}
+
+/* Card base */
+.feature-card {
+  background: var(--white);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  height: 100%;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(45, 106, 79, 0.06);
+  /* Reveal animation starts hidden */
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+  will-change: opacity, transform;
+}
+
+/* JS adds this class when card enters viewport */
+.feature-card.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Colored left border accents */
+.feature-card.accent-green  { border-left: 4px solid #2D6A4F; }
+.feature-card.accent-yellow { border-left: 4px solid #F4A261; }
+.feature-card.accent-red    { border-left: 4px solid #E63946; }
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Icon circle */
+.feature-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.feature-icon-wrap.icon-green  { background: rgba(45, 106, 79, 0.15); }
+.feature-icon-wrap.icon-yellow { background: rgba(244, 162, 97, 0.35); }
+.feature-icon-wrap.icon-red    { background: rgba(220, 53, 69, 0.20); }
+
+.feature-card-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 0.35rem;
+  color: var(--dark);
+}
+
+.feature-card-hi {
+  font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary-green);
+  margin-bottom: 0.85rem;
+}
+
+.feature-card p {
+  color: #444;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+/* Outline buttons on feature cards */
+.btn-outline-feature {
+  font-weight: 600;
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  display: inline-block;
+  transition: background var(--transition), color var(--transition);
+}
+
+.btn-outline-green  { border: 2px solid var(--primary-green); color: var(--primary-green); }
+.btn-outline-yellow { border: 2px solid var(--yellow); color: #c77d3a; }
+.btn-outline-red    { border: 2px solid #dc3545; color: #dc3545; }
+
+.btn-outline-green:hover  { background: var(--primary-green); color: var(--white); }
+.btn-outline-yellow:hover { background: var(--yellow); color: var(--dark); }
+.btn-outline-red:hover    { background: #dc3545; color: var(--white); }
+
+
+/* ===================== STATS ===================== */
+.stats-section {
+  background-color: var(--stats-bg);
+  padding: 3.5rem 0;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+}
+
+.stat-number {
+  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  font-size: 0.95rem;
+  color: var(--cream);
+  margin-top: 0.5rem;
+  opacity: 0.95;
+}
+
+
+/* ===================== CTA ===================== */
+.cta-section {
+  background-color: var(--cream);
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.cta-section h2 {
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 0.75rem;
+}
+
+.cta-section .lead {
+  color: #444;
+  margin-bottom: 1.75rem;
+}
+
+.btn-cta-green {
+  background-color: var(--primary-green);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.85rem 2.25rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.btn-cta-green:hover {
+  background: #245a42;
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(45, 106, 79, 0.35);
+}
+
+
+/* ===================== SHARED BUTTONS (other pages) ===================== */
+.btn-primary-rahat {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  color: var(--white);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.btn-primary-rahat:hover {
+  background-color: #245a42;
+  border-color: #245a42;
+  color: var(--white);
+}
+
+.btn-secondary-rahat {
+  background-color: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--dark);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.btn-secondary-rahat:hover {
+  background-color: #e8944a;
+  border-color: #e8944a;
+  color: var(--dark);
+}
+
+
+/* ===================== FORM PAGES (crop, fertilizer, disease) ===================== */
+/* Shared styles for all input form pages */
+
+.form-page-bg {
+  min-height: 100vh;
+  background-color: #f0f7f4;
+  padding: 3rem 0;
+}
+
+.form-card {
+  background: var(--white);
+  border-radius: var(--radius-card);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-card-title {
+  font-weight: 700;
+  color: var(--primary-green);
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.form-card-sub {
+  font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+  color: var(--light-green);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1.75rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.35rem;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border: 1.5px solid #dee2e6;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.95rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 0.2rem rgba(45, 106, 79, 0.15);
+  outline: none;
+}
+
+.btn-submit-rahat {
+  width: 100%;
+  background-color: var(--primary-green);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.btn-submit-rahat:hover {
+  background: #245a42;
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+}
+
+
+/* ===================== RESULT PAGES ===================== */
+.result-card {
+  background: var(--white);
+  border-radius: var(--radius-card);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.result-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.result-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.result-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-bottom: 1.5rem;
+}
+
+.btn-back-rahat {
+  display: inline-block;
+  background: transparent;
+  color: var(--primary-green);
+  border: 2px solid var(--primary-green);
+  font-weight: 600;
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition);
+}
+
+.btn-back-rahat:hover {
+  background: var(--primary-green);
+  color: var(--white);
+}
+
+
+/* ===================== UPLOAD ZONE (disease page) ===================== */
+.upload-zone {
+  border: 2.5px dashed var(--primary-green);
+  border-radius: 14px;
+  background: rgba(45, 106, 79, 0.04);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.upload-zone:hover {
+  background: rgba(45, 106, 79, 0.09);
+  border-color: var(--light-green);
+}
+
+.upload-zone-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.upload-zone-text {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.upload-preview {
+  max-height: 250px;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+  margin: 1rem auto 0;
+}
+
+
+/* ===================== BREADCRUMB ===================== */
+.rahat-breadcrumb {
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.rahat-breadcrumb a {
+  color: var(--primary-green);
+  text-decoration: none;
+}
+
+.rahat-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.rahat-breadcrumb .separator {
+  margin: 0 0.4rem;
+  color: #999;
+}
+
+.rahat-breadcrumb .current {
+  color: #666;
+}
+
+
+/* ===================== UTILITIES ===================== */
+.rahat-main {
+  min-height: calc(100vh - 4.75rem);
+}
+
+/* Staggered card animation delay */
+.feature-card:nth-child(1) { transition-delay: 0s; }
+.feature-card:nth-child(2) { transition-delay: 0.15s; }
+.feature-card:nth-child(3) { transition-delay: 0.3s; }

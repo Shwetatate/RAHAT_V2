@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+{% block title %}Crop Recommendation — Rahat{% endblock %}
+
+
+{% block head_extra %}
+<style>
+
+  /* ===================== SECTION A — PAGE LAYOUT ===================== */
+  .crop-page {
+    padding: 3rem 0;
+    background: #f8f9fa;
+    min-height: calc(100vh - 140px);
+  }
+
+  .crop-page-title {
+    font-weight: 700;
+    color: var(--primary-green);
+  }
+
+  .crop-page-subtitle {
+    color: #4c4c4c;
+    margin-bottom: 1.75rem;
+  }
+
+  .crop-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(45, 106, 79, 0.08);
+    height: 100%;
+  }
+
+  .crop-form-title,
+  .crop-info-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--dark);
+  }
+
+  .crop-form-sub,
+  .crop-info-sub {
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+    color: var(--primary-green);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+
+  .crop-label {
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .crop-form .form-control {
+    border-radius: 12px;
+    padding: 0.65rem 0.8rem;
+    border: 1.5px solid #dee2e6;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .crop-form .form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(45, 106, 79, 0.15);
+  }
+
+  .crop-form .form-text {
+    font-size: 0.8rem;
+  }
+
+  .btn-crop-submit {
+    width: 100%;
+    background: var(--primary-green);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 0.9rem 1rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-crop-submit:hover {
+    background: #245a42;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(45, 106, 79, 0.3);
+  }
+
+  .step-row {
+    display: flex;
+    align-items: start;
+    gap: 0.6rem;
+    margin-bottom: 0.85rem;
+    color: #2b2b2b;
+  }
+
+  .tip-box {
+    margin-top: 1.2rem;
+    background: #fff7d6;
+    border: 1px solid #f4a26166;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    font-size: 0.94rem;
+    color: #3f372b;
+  }
+
+  .crop-emoji-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 1.45rem;
+    margin-top: 0.7rem;
+  }
+
+  .crop-supported-label {
+    margin-top: 0.55rem;
+    color: #4c4c4c;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  /* ===================== END SECTION A ===================== */
+
+
+  /* ===================== SECTION B — WEATHER WIDGET ===================== */
+  .weather-widget-card {
+    background: linear-gradient(135deg, #E8F5E9, #F1F8E9);
+    border: 1px solid #A5D6A7;
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 1.25rem;
+  }
+
+  .weather-temp {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2D6A4F;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .weather-condition {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  .weather-city {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2D6A4F;
+    margin-top: 6px;
+    margin-bottom: 0;
+  }
+
+  .weather-stat {
+    font-size: 0.88rem;
+    color: #444;
+    margin-bottom: 3px;
+  }
+
+  .weather-autofill-badge {
+    font-size: 0.75rem;
+    color: #2D6A4F;
+    background: #C8E6C9;
+    border-radius: 8px;
+    padding: 2px 8px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  .weather-loading {
+    text-align: center;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+  }
+
+  .autofilled {
+    border-color: #52B788 !important;
+    background: #F0FFF4 !important;
+  }
+  /* ===================== END SECTION B ===================== */
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ===================== SECTION C — PAGE HEADER + BREADCRUMB ===================== -->
+<section class="crop-page">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav class="rahat-breadcrumb" aria-label="breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span class="separator">›</span>
+      <span class="current">Crop Recommendation</span>
+    </nav>
+
+    <!-- Page Title -->
+    <h1 class="crop-page-title mb-1">Crop Recommendation</h1>
+    <p class="crop-form-sub mb-2">पीक शिफारस</p>
+    <p class="crop-page-subtitle">Enter your soil details and get AI powered crop suggestion</p>
+    <!-- ===================== END SECTION C ===================== -->
+
+
+    <div class="row g-4">
+
+      <!-- ===================== SECTION D — FORM COLUMN ===================== -->
+      <div class="col-lg-7">
+        <div class="crop-card">
+          <h2 class="crop-form-title">Soil Details</h2>
+          <p class="crop-form-sub">मातीचे तपशील</p>
+
+          <!-- Error alert -->
+          {% if error %}
+          <div class="alert alert-danger py-2">{{ error }}</div>
+          {% endif %}
+
+          <!-- ===================== SECTION E — WEATHER WIDGET HTML ===================== -->
+          <!-- (auto fills temperature, humidity, rainfall via GPS + OpenWeatherMap) -->
+
+          <!-- Loading spinner -->
+          <div id="weather-loading" class="weather-loading">
+            <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+            <span class="ms-2 text-muted" style="font-size:0.9rem;">
+              📍 Detecting your location & weather...
+            </span>
+          </div>
+
+          <!-- Weather card (hidden until data loads) -->
+          <div id="weather-widget" class="weather-widget-card" style="display:none;">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-3">
+                <img id="weather-icon" src="" width="55" height="55" alt="weather icon">
+                <div>
+                  <p class="weather-temp" id="weather-temp">--°C</p>
+                  <p class="weather-condition" id="weather-condition">--</p>
+                  <p class="weather-city" id="weather-city">📍 Detecting...</p>
+                </div>
+              </div>
+              <div class="text-end">
+                <div class="weather-stat">💧 Humidity: <strong id="weather-humidity">--%</strong></div>
+                <div class="weather-stat">🌧️ Rainfall: <strong id="weather-rainfall">-- mm</strong></div>
+                <span class="weather-autofill-badge">✅ Auto-filled below</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Location denied warning -->
+          <div id="location-error" class="alert alert-warning py-2 mb-3"
+               style="display:none; border-radius:12px; font-size:0.9rem;">
+            📍 Location access denied. Please enter
+            Temperature, Humidity and Rainfall manually.
+          </div>
+          <!-- ===================== END SECTION E ===================== -->
+
+
+          <!-- ===================== SECTION F — SOIL INPUT FORM ===================== -->
+          <form method="post" action="{{ url_for('crop') }}" class="crop-form">
+            <div class="row g-3">
+
+              <!-- Nitrogen -->
+              <div class="col-md-6">
+                <label class="crop-label" for="N">Nitrogen (N) — नत्र</label>
+                <input id="N" name="N" type="number" min="0" max="140"
+                       placeholder="e.g. 90" class="form-control" required>
+                <div class="form-text">kg/ha</div>
+              </div>
+
+              <!-- Phosphorus -->
+              <div class="col-md-6">
+                <label class="crop-label" for="P">Phosphorus (P) — स्फुरद</label>
+                <input id="P" name="P" type="number" min="0" max="145"
+                       placeholder="e.g. 42" class="form-control" required>
+                <div class="form-text">kg/ha</div>
+              </div>
+
+              <!-- Potassium -->
+              <div class="col-md-6">
+                <label class="crop-label" for="K">Potassium (K) — पालाश</label>
+                <input id="K" name="K" type="number" min="0" max="205"
+                       placeholder="e.g. 43" class="form-control" required>
+                <div class="form-text">kg/ha</div>
+              </div>
+
+              <!-- Temperature (auto-filled by weather JS) -->
+              <div class="col-md-6">
+                <label class="crop-label" for="temperature">
+                  Temperature — तापमान
+                  <span id="temp-badge" class="weather-autofill-badge ms-1"
+                        style="display:none;">🌡️ Auto</span>
+                </label>
+                <input id="temperature" name="temperature" type="number"
+                       step="0.1" placeholder="e.g. 25.5"
+                       class="form-control" required>
+                <div class="form-text">°C</div>
+              </div>
+
+              <!-- Humidity (auto-filled by weather JS) -->
+              <div class="col-md-6">
+                <label class="crop-label" for="humidity">
+                  Humidity — आर्द्रता
+                  <span id="humidity-badge" class="weather-autofill-badge ms-1"
+                        style="display:none;">💧 Auto</span>
+                </label>
+                <input id="humidity" name="humidity" type="number"
+                       step="0.1" placeholder="e.g. 80"
+                       class="form-control" required>
+                <div class="form-text">%</div>
+              </div>
+
+              <!-- pH -->
+              <div class="col-md-6">
+                <label class="crop-label" for="ph">pH Level — pH पातळी</label>
+                <input id="ph" name="ph" type="number" step="0.1"
+                       min="0" max="14" placeholder="e.g. 6.5"
+                       class="form-control" required>
+                <div class="form-text">0–14</div>
+              </div>
+
+              <!-- Rainfall (auto-filled by weather JS) -->
+              <div class="col-md-6">
+                <label class="crop-label" for="rainfall">
+                  Rainfall — पर्जन्यमान
+                  <span id="rainfall-badge" class="weather-autofill-badge ms-1"
+                        style="display:none;">🌧️ Auto</span>
+                </label>
+                <input id="rainfall" name="rainfall" type="number"
+                       step="0.1" placeholder="e.g. 200"
+                       class="form-control" required>
+                <div class="form-text">mm</div>
+              </div>
+
+              <!-- Submit -->
+              <div class="col-12">
+                <button type="submit" class="btn-crop-submit">
+                  🌱 Get Crop Recommendation
+                </button>
+              </div>
+
+            </div>
+          </form>
+          <!-- ===================== END SECTION F ===================== -->
+
+        </div>
+      </div>
+      <!-- ===================== END SECTION D ===================== -->
+
+
+      <!-- ===================== SECTION G — INFO SIDEBAR ===================== -->
+      <div class="col-lg-5">
+        <div class="crop-card" style="background:#E8F5E9;">
+          <h3 class="crop-info-title">How it works</h3>
+          <p class="crop-info-sub">हे कसे काम करते</p>
+
+          <div class="step-row"><span>📍</span>
+            <span>Browser detects your location automatically</span>
+          </div>
+          <div class="step-row"><span>🌦️</span>
+            <span>Real time weather is fetched for your area</span>
+          </div>
+          <div class="step-row"><span>🧪</span>
+            <span>You enter only soil NPK and pH values</span>
+          </div>
+          <div class="step-row"><span>🤖</span>
+            <span>AI analyzes soil + weather data together</span>
+          </div>
+          <div class="step-row"><span>🌾</span>
+            <span>Get the best crop recommendation!</span>
+          </div>
+
+          <!-- Tip box -->
+          <div class="tip-box">
+            💡 Tip: Get soil tested at your nearest Krishi Kendra
+            for accurate NPK values
+          </div>
+
+          <!-- Supported crops -->
+          <div class="mt-4">
+            <h4 class="h6 mb-2">Supported crops</h4>
+            <div class="crop-emoji-grid" aria-hidden="true">
+              🌾🌽🍚🥜🫘🍅🥭🍎🍇🍌🥥🌿🫚🧅🧄
+            </div>
+            <div class="crop-supported-label">22 crops supported</div>
+          </div>
+
+        </div>
+      </div>
+      <!-- ===================== END SECTION G ===================== -->
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== SECTION H — WEATHER GPS + API JAVASCRIPT ===================== -->
+<!-- To disable weather autofill: remove this entire script block -->
+</section>
+
+{% endblock %}
+
+
+ 
+{% block page_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const weatherWidget  = document.getElementById('weather-widget');
+  const weatherLoading = document.getElementById('weather-loading');
+  const locationError  = document.getElementById('location-error');
+
+  function fillWeatherFields(weather) {
+    const tempField     = document.getElementById('temperature');
+    const humidityField = document.getElementById('humidity');
+    const rainfallField = document.getElementById('rainfall');
+    if (tempField) { tempField.value = weather.temperature; tempField.classList.add('autofilled'); document.getElementById('temp-badge').style.display = 'inline'; }
+    if (humidityField) { humidityField.value = weather.humidity; humidityField.classList.add('autofilled'); document.getElementById('humidity-badge').style.display = 'inline'; }
+    if (rainfallField) { rainfallField.value = weather.rainfall; rainfallField.classList.add('autofilled'); document.getElementById('rainfall-badge').style.display = 'inline'; }
+  }
+
+  function showWeatherWidget(weather) {
+    document.getElementById('weather-temp').textContent      = weather.temperature + '°C';
+    document.getElementById('weather-condition').textContent = weather.condition;
+    document.getElementById('weather-city').textContent      = '📍 ' + weather.city + ', ' + weather.country;
+    document.getElementById('weather-humidity').textContent  = weather.humidity + '%';
+    document.getElementById('weather-rainfall').textContent  = weather.rainfall + ' mm';
+    document.getElementById('weather-icon').src              = weather.icon_url;
+    weatherLoading.style.display = 'none';
+    weatherWidget.style.display  = 'block';
+    fillWeatherFields(weather);
+  }
+
+  function fetchWeather(lat, lon) {
+    fetch('/api/weather?lat=' + lat + '&lon=' + lon)
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.error) { weatherLoading.style.display = 'none'; locationError.style.display = 'block'; }
+        else { showWeatherWidget(data); }
+      })
+      .catch(function () { weatherLoading.style.display = 'none'; locationError.style.display = 'block'; });
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) { fetchWeather(position.coords.latitude, position.coords.longitude); },
+      function () { weatherLoading.style.display = 'none'; locationError.style.display = 'block'; },
+      { timeout: 10000 }
+    );
+  } else {
+    weatherLoading.style.display = 'none';
+    locationError.style.display  = 'block';
+  }
+});
+</script>
+{% endblock %}
+<!-- ===================== END SECTION H ===================== -->

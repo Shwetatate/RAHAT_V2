@@ -1,0 +1,11 @@
+Update `.gitignore`:
+```
+__pycache__/
+*.py[cod]
+venv/
+env/
+.env
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+models/
+data/

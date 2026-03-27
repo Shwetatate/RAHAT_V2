@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+{% block title %}Detection Result — Rahat{% endblock %}
+
+
+{% block head_extra %}
+<style>
+
+  /* ===================== SECTION A — PAGE LAYOUT ===================== */
+  .result-page {
+    padding: 3rem 0;
+    background: #F7FDF9;
+    min-height: 100vh;
+  }
+  /* ===================== END SECTION A ===================== */
+
+
+  /* ===================== SECTION B — SHARED CARD BASE ===================== */
+  .res-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(45, 106, 79, 0.08);
+    margin-bottom: 1.25rem;
+  }
+
+  .res-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1B4332;
+    margin-bottom: 4px;
+  }
+
+  .res-card-sub { font-size: 0.78rem; color: #888; }
+  /* ===================== END SECTION B ===================== */
+
+
+  /* ===================== SECTION C — ANALYZED IMAGE ===================== */
+  .analyzed-img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    max-height: 280px;
+  }
+  /* ===================== END SECTION C ===================== */
+
+
+  /* ===================== SECTION D — CONFIDENCE SCORE ===================== */
+  .confidence-number {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .conf-high   { color: #2D6A4F; }
+  .conf-medium { color: #F4A40F; }
+  .conf-low    { color: #DC3545; }
+
+  .conf-bar-bg {
+    width: 100%;
+    height: 10px;
+    background: #E9ECEF;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 10px 0 6px;
+  }
+
+  .conf-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 8px;
+    transition: width 1.2s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  .fill-high   { background: linear-gradient(90deg, #52B788, #2D6A4F); }
+  .fill-medium { background: linear-gradient(90deg, #F4A40F, #e68d0c); }
+  .fill-low    { background: linear-gradient(90deg, #FF6B6B, #DC3545); }
+  /* ===================== END SECTION D ===================== */
+
+
+  /* ===================== SECTION E — PREDICTION RESULT CARD ===================== */
+  .pred-healthy {
+    background: linear-gradient(135deg, #D8F3DC, #B7E4C7);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .pred-diseased {
+    background: linear-gradient(135deg, #FFE5E5, #FECACA);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .pred-emoji { font-size: 3rem; margin-bottom: 10px; }
+
+  .pred-label {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1B4332;
+    margin-bottom: 6px;
+  }
+
+  .pred-label.diseased { color: #7B2D2D; }
+  .pred-detail { font-size: 0.88rem; color: #666; }
+  /* ===================== END SECTION E ===================== */
+
+
+  /* ===================== SECTION F — RIGHT COLUMN CARDS ===================== */
+  .remedy-card {
+    background: #F0FFF4;
+    border-left: 5px solid #52B788;
+    border-radius: 0 18px 18px 0;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 16px rgba(45, 106, 79, 0.07);
+  }
+
+  .remedy-text {
+    font-size: 0.9rem;
+    color: #1b2b1b;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  .info-card-disease {
+    background: #FFFBEB;
+    border-left: 5px solid #F4A40F;
+    border-radius: 0 18px 18px 0;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 16px rgba(244, 164, 15, 0.07);
+  }
+
+  .info-text {
+    font-size: 0.88rem;
+    color: #444;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .prevention-card {
+    background: #EFF9FF;
+    border-left: 5px solid #74b9ff;
+    border-radius: 0 18px 18px 0;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 16px rgba(116, 185, 255, 0.08);
+  }
+
+  .prev-item {
+    display: flex;
+    gap: 8px;
+    font-size: 0.87rem;
+    color: #333;
+    margin-bottom: 8px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .prev-check { color: #2D6A4F; font-weight: 700; flex-shrink: 0; }
+  /* ===================== END SECTION F ===================== */
+
+
+  /* ===================== SECTION G — ACTION BUTTONS ===================== */
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #2D6A4F;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: 2px solid #52B788;
+    padding: 8px 18px;
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease;
+    margin-right: 0.5rem;
+  }
+
+  .btn-back:hover { background: #2D6A4F; color: #fff; border-color: #2D6A4F; }
+
+  .btn-home-disease {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #2D6A4F;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: 2px solid #2D6A4F;
+    padding: 8px 18px;
+    border-radius: 999px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-home-disease:hover {
+    background: #245a42;
+    border-color: #245a42;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  .alert-rahat {
+    background: #FFF0F0;
+    border: 1px solid #FFCCCC;
+    color: #8B1A1A;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: .88rem;
+  }
+  /* ===================== END SECTION G ===================== */
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="result-page">
+  <div class="container">
+
+    <!-- ===================== SECTION H — HEADER ===================== -->
+    <nav class="rahat-breadcrumb" aria-label="breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span class="separator">›</span>
+      <a href="{{ url_for('disease') }}">Disease Detection</a>
+      <span class="separator">›</span>
+      <span class="current">Result</span>
+    </nav>
+
+    <div class="d-flex gap-3 mb-4 flex-wrap">
+      <a href="{{ url_for('disease') }}" class="btn-back">← Try Another Image</a>
+      <a href="{{ url_for('index') }}" class="btn-home-disease">🏠 Home</a>
+    </div>
+    <!-- ===================== END SECTION H ===================== -->
+
+
+    {% if error %}
+    <div class="alert-rahat">⚠️ {{ error }}</div>
+    {% else %}
+
+    <div class="row g-4">
+
+      <!-- ===================== SECTION I — LEFT COLUMN ===================== -->
+      <div class="col-lg-5">
+
+        <!-- Analyzed image -->
+        <div class="res-card">
+          <p class="res-card-title">
+            Analyzed Image
+            <span class="res-card-sub ms-1">विश्लेषित चित्र</span>
+          </p>
+          <img class="analyzed-img"
+               src="{{ url_for('static', filename='uploads/' ~ image_path) }}"
+               alt="Uploaded leaf">
+        </div>
+
+        <!-- Confidence score -->
+        <!-- data-target stores the value so JS reads it safely -->
+        <div class="res-card">
+          <p class="res-card-title">📊 Detection Confidence</p>
+          {% if confidence is not none %}
+            {% if confidence > 80 %}
+              <div class="confidence-number conf-high"
+                   id="confNum" data-target="{{ confidence }}">0%</div>
+              <div class="conf-bar-bg">
+                <div class="conf-bar-fill fill-high" id="confBar"></div>
+              </div>
+            {% elif confidence >= 60 %}
+              <div class="confidence-number conf-medium"
+                   id="confNum" data-target="{{ confidence }}">0%</div>
+              <div class="conf-bar-bg">
+                <div class="conf-bar-fill fill-medium" id="confBar"></div>
+              </div>
+            {% else %}
+              <div class="confidence-number conf-low"
+                   id="confNum" data-target="{{ confidence }}">0%</div>
+              <div class="conf-bar-bg">
+                <div class="conf-bar-fill fill-low" id="confBar"></div>
+              </div>
+            {% endif %}
+            <p style="font-size:0.78rem; color:#888; margin-top:4px;">
+              Model confidence in this prediction
+            </p>
+          {% else %}
+            <p style="color:#888; font-size:0.88rem;">Confidence unavailable.</p>
+          {% endif %}
+        </div>
+
+        <!-- Prediction result -->
+        {% if is_healthy %}
+        <div class="pred-healthy">
+          <div class="pred-emoji">✅</div>
+          <div class="pred-label">Healthy Plant!</div>
+          <div class="pred-detail">No disease detected</div>
+        </div>
+        {% else %}
+        <div class="pred-diseased">
+          <div class="pred-emoji">⚠️</div>
+          <div class="pred-label diseased">{{ display_name }}</div>
+          <div class="pred-detail">
+            {% set tokens = display_name.split(' ') %}
+            {% if tokens|length > 1 %}
+              Plant: {{ tokens[0] }}<br>
+              Condition: {{ tokens[1:]|join(' ') }}
+            {% else %}
+              Condition: {{ display_name }}
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+      <!-- ===================== END SECTION I ===================== -->
+
+
+      <!-- ===================== SECTION J — RIGHT COLUMN ===================== -->
+      <div class="col-lg-7">
+
+        <!-- Remedy -->
+        <div class="remedy-card">
+          <p class="res-card-title" style="color:#1B4332; margin-bottom:0.6rem;">
+            💊 Recommended Treatment
+            <span class="res-card-sub ms-1">उपचार</span>
+          </p>
+          <p class="remedy-text">{{ remedy }}</p>
+        </div>
+
+        <!-- ===================== SECTION K — DISEASE INFO DICTIONARY ===================== -->
+        {% set disease_info = {
+          "Pepper__bell___Bacterial_spot":
+            "Bacterial spot is caused by Xanthomonas bacteria. It creates dark, water-soaked lesions on leaves, stems, and fruits. Warm, wet weather favors its spread.",
+          "Pepper__bell___healthy":
+            "This pepper plant appears healthy with no signs of disease.",
+          "Potato___Early_blight":
+            "Early blight is caused by Alternaria solani fungus. It creates dark brown spots with concentric rings on older leaves, often during warm, humid weather.",
+          "Potato___Late_blight":
+            "Late blight (caused by Phytophthora infestans) is one of the most destructive potato diseases. It spreads rapidly in cool, moist conditions.",
+          "Potato___healthy":
+            "This potato plant appears healthy with no visible disease symptoms.",
+          "Tomato_Bacterial_spot":
+            "Bacterial spot on tomato is caused by Xanthomonas species. It produces small, dark, water-soaked spots on leaves, stems, and fruits.",
+          "Tomato_Early_blight":
+            "Tomato early blight (Alternaria linariae) causes dark lesions with concentric rings and yellowing, usually starting on older leaves.",
+          "Tomato_Late_blight":
+            "Late blight in tomatoes is caused by Phytophthora infestans, leading to greasy, dark lesions and rapid plant collapse in cool, wet weather.",
+          "Tomato_Leaf_Mold":
+            "Leaf mold (Passalora fulva) causes yellow patches on upper leaf surfaces and olive-green mold underneath. It thrives in high-humidity conditions.",
+          "Tomato_Septoria_leaf_spot":
+            "Septoria leaf spot is a fungal disease causing small, circular spots with dark borders and grey centers, leading to defoliation if untreated.",
+          "Tomato_Spider_mites_Two_spotted_spider_mite":
+            "Spider mites are tiny arachnids that suck sap from leaves, causing stippling, yellowing, and webbing. They thrive in hot, dry conditions.",
+          "Tomato__Target_Spot":
+            "Target spot is caused by Corynespora cassiicola fungus, producing bullseye-patterned lesions on leaves with yellow halos.",
+          "Tomato__Tomato_YellowLeaf__Curl_Virus":
+            "Yellow Leaf Curl Virus is transmitted by whiteflies. It causes upward curling of leaves, yellowing, and stunted plant growth.",
+          "Tomato__Tomato_mosaic_virus":
+            "Tomato mosaic virus causes mottled, mosaic-pattern yellowing on leaves, stunted growth, and distorted fruits.",
+          "Tomato_healthy":
+            "This tomato plant appears completely healthy with no visible signs of disease."
+        } %}
+
+        <div class="info-card-disease">
+          <p class="res-card-title" style="color:#7B5A00; margin-bottom:0.6rem;">
+            📖 About this Condition
+            <span class="res-card-sub ms-1">या रोगाबद्दल</span>
+          </p>
+          <p class="info-text">
+            {% if predicted_class and predicted_class in disease_info %}
+              {{ disease_info[predicted_class] }}
+            {% elif is_healthy %}
+              Your plant shows no signs of known diseases. Keep up good farming practices!
+            {% else %}
+              Detailed information about this condition is not available.
+              Please consult your local agricultural extension officer for guidance.
+            {% endif %}
+          </p>
+        </div>
+        <!-- ===================== END SECTION K ===================== -->
+
+        <!-- Prevention tips -->
+        <div class="prevention-card">
+          <p class="res-card-title" style="color:#1a4f8a; margin-bottom:0.6rem;">
+            🛡️ Prevention Tips
+            <span class="res-card-sub ms-1">प्रतिबंध</span>
+          </p>
+          {% if is_healthy %}
+            <div class="prev-item"><span class="prev-check">✔</span><span>Continue regular monitoring of plant health.</span></div>
+            <div class="prev-item"><span class="prev-check">✔</span><span>Maintain proper spacing between plants for good airflow.</span></div>
+            <div class="prev-item"><span class="prev-check">✔</span><span>Water at the base of the plant to avoid wetting foliage.</span></div>
+            <div class="prev-item"><span class="prev-check">✔</span><span>Apply a preventive organic fungicide each growing season.</span></div>
+          {% else %}
+            <div class="prev-item"><span class="prev-check">✔</span><span>Remove and destroy infected plant material immediately.</span></div>
+            <div class="prev-item"><span class="prev-check">✔</span><span>Avoid overhead irrigation — water at soil level only.</span></div>
+            <div class="prev-item"><span class="prev-check">✔</span><span>Rotate crops annually to break the disease cycle.</span></div>
+            <div class="prev-item"><span class="prev-check">✔</span><span>Use certified disease-resistant seed varieties next season.</span></div>
+          {% endif %}
+        </div>
+
+      </div>
+      <!-- ===================== END SECTION J ===================== -->
+
+    </div>
+
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+
+{% block page_scripts %}
+<!-- ===================== SECTION L — CONFIDENCE ANIMATION ===================== -->
+<!-- Reads confidence from data-target attribute — no Jinja inside JS -->
+<script>
+(function () {
+  var confEl = document.getElementById('confNum');
+  var barEl  = document.getElementById('confBar');
+  if (!confEl || !barEl) return;
+
+  var target   = parseFloat(confEl.getAttribute('data-target') || '0');
+  var duration = 1200;
+  var start    = null;
+
+  function step(ts) {
+    if (!start) start = ts;
+    var progress = Math.min((ts - start) / duration, 1);
+    var eased    = progress * (2 - progress);
+    confEl.textContent = (target * eased).toFixed(1) + '%';
+    barEl.style.width  = (target * eased) + '%';
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      confEl.textContent = target.toFixed(1) + '%';
+      barEl.style.width  = target + '%';
+    }
+  }
+  requestAnimationFrame(step);
+})();
+</script>
+<!-- ===================== END SECTION L ===================== -->
+{% endblock %}

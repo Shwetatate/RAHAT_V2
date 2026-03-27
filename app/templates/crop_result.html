@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+{% block title %}Crop Result — Rahat{% endblock %}
+
+
+{% block head_extra %}
+<style>
+
+  /* ===================== SECTION A — PAGE LAYOUT ===================== */
+  .crop-result-page {
+    padding: 2.5rem 0 3rem;
+    background: #f8f9fa;
+    min-height: calc(100vh - 140px);
+  }
+
+  .result-card {
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(45, 106, 79, 0.08);
+    background: #fff;
+    padding: 1.75rem;
+  }
+
+  .result-subtitle {
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+    color: var(--primary-green);
+    font-weight: 600;
+  }
+  /* ===================== END SECTION A ===================== */
+
+
+  /* ===================== SECTION B — HERO CARD ===================== */
+  .main-result-card {
+    background: linear-gradient(135deg, #2D6A4F 0%, #52B788 100%);
+    color: #fff;
+    padding: 2.25rem;
+    border: none;
+  }
+
+  .crop-hero-emoji { font-size: 4rem; line-height: 1; }
+
+  .crop-name-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0.65rem 0 0.35rem;
+    text-transform: capitalize;
+  }
+
+  .crop-name-hi {
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+    opacity: 0.95;
+    margin-bottom: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .confidence-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+  /* ===================== END SECTION B ===================== */
+
+
+  /* ===================== SECTION C — SOIL TABLE ===================== */
+  .soil-table td {
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.92rem;
+  }
+
+  .soil-table tr:last-child td { border-bottom: none; }
+  .soil-table td:first-child   { color: #666; font-weight: 500; }
+  .soil-table td:last-child    { font-weight: 700; color: var(--dark); }
+  /* ===================== END SECTION C ===================== */
+
+
+  /* ===================== SECTION D — RIGHT COLUMN CARDS ===================== */
+
+  /* What to do next card */
+  .next-steps-card {
+    background: linear-gradient(135deg, #E8F5E9, #F1F8E9);
+    border: 1px solid #A5D6A7;
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 24px rgba(45, 106, 79, 0.08);
+  }
+
+  .next-steps-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1B4332;
+    margin-bottom: 0.2rem;
+  }
+
+  .next-steps-sub {
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+    font-size: 0.82rem;
+    color: #52B788;
+    font-weight: 600;
+    margin-bottom: 1.1rem;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .step-num {
+    width: 26px;
+    height: 26px;
+    background: #2D6A4F;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-text {
+    font-size: 0.88rem;
+    color: #2b2b2b;
+    line-height: 1.55;
+    padding-top: 3px;
+  }
+
+  /* Growing tips card */
+  .tips-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    border-left: 5px solid #52B788;
+    margin-top: 1.25rem;
+  }
+
+  .tips-card-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1B4332;
+    margin-bottom: 0.2rem;
+  }
+
+  .tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+    font-size: 0.88rem;
+    color: #444;
+    line-height: 1.5;
+  }
+
+  .tip-check { color: #2D6A4F; font-weight: 700; flex-shrink: 0; }
+
+  /* Try fertilizer CTA */
+  .fert-cta-box {
+    background: linear-gradient(135deg, #FFF8E7, #FFF3CD);
+    border: 1px solid #F4A261;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .fert-cta-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #7B5A00;
+  }
+
+  .btn-fert-cta {
+    display: inline-block;
+    background: #F4A261;
+    color: #1b1b1b;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-fert-cta:hover {
+    background: #e8944a;
+    color: #1b1b1b;
+    transform: translateY(-1px);
+  }
+  /* ===================== END SECTION D ===================== */
+
+
+  /* ===================== SECTION E — ACTION BUTTONS ===================== */
+  .btn-back-crop {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    color: var(--primary-green);
+    border: 2px solid var(--primary-green);
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .btn-back-crop:hover { background: var(--primary-green); color: #fff; }
+
+  .btn-home-crop {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--primary-green);
+    color: #fff;
+    border: 2px solid var(--primary-green);
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-home-crop:hover {
+    background: #245a42;
+    border-color: #245a42;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+  /* ===================== END SECTION E ===================== */
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ===================== SECTION F — EMOJI + NAME MAPS ===================== -->
+{% set crop_emoji_map = {
+  "rice":"🍚","maize":"🌽","chickpea":"🫘","kidneybeans":"🫘","pigeonpeas":"🫘",
+  "mothbeans":"🫘","mungbean":"🫘","blackgram":"🫘","lentil":"🫘",
+  "pomegranate":"🍎","banana":"🍌","mango":"🥭","grapes":"🍇",
+  "watermelon":"🍉","muskmelon":"🍈","apple":"🍎","orange":"🍊",
+  "papaya":"🍈","coconut":"🥥","cotton":"🌿","jute":"🌿","coffee":"☕"
+} %}
+{% set crop_hi_map = {
+  "rice":"तांदूळ","maize":"मका","chickpea":"हरभरा","kidneybeans":"राजमा",
+  "pigeonpeas":"तूर","mothbeans":"मटकी","mungbean":"मूग","blackgram":"उडीद",
+  "lentil":"मसूर","pomegranate":"डाळिंब","banana":"केळी","mango":"आंबा",
+  "grapes":"द्राक्षे","watermelon":"टरबूज","muskmelon":"खरबूज",
+  "apple":"सफरचंद","orange":"संत्रे","papaya":"पपई","coconut":"नारळ",
+  "cotton":"कापूस","jute":"ताग","coffee":"कॉफी"
+} %}
+{% set crop_key   = (crop_name or "")|lower|trim %}
+{% set crop_emoji = crop_emoji_map.get(crop_key, "🌾") %}
+{% set crop_hi    = crop_hi_map.get(crop_key, "पीक शिफारस") %}
+<!-- ===================== END SECTION F ===================== -->
+
+
+<section class="crop-result-page">
+  <div class="container">
+
+    <!-- ===================== SECTION G — HEADER ===================== -->
+    <nav class="rahat-breadcrumb" aria-label="breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span class="separator">›</span>
+      <a href="{{ url_for('crop') }}">Crop</a>
+      <span class="separator">›</span>
+      <span class="current">Result</span>
+    </nav>
+
+    <div class="d-flex gap-3 mb-4 flex-wrap">
+      <a href="{{ url_for('crop') }}" class="btn-back-crop">← Back to Form</a>
+      <a href="{{ url_for('index') }}" class="btn-home-crop">🏠 Home</a>
+    </div>
+    <!-- ===================== END SECTION G ===================== -->
+
+
+    <div class="row g-4">
+
+      <!-- ===================== SECTION H — LEFT COLUMN ===================== -->
+      <div class="col-lg-6">
+
+        <!-- Hero result card -->
+        <div class="result-card main-result-card mb-4">
+          <div class="crop-hero-emoji">{{ crop_emoji }}</div>
+          <h1 class="crop-name-title">{{ crop_name }}</h1>
+          <p class="crop-name-hi">{{ crop_hi }}</p>
+          <span class="confidence-badge">✓ High Confidence</span>
+        </div>
+
+        <!-- Soil data table -->
+        <div class="result-card">
+          <h3 class="h5 fw-800 mb-1" style="color:var(--dark);">Your Soil Data</h3>
+          <p class="result-subtitle mb-3">तुमचा माती डेटा</p>
+          <table class="table soil-table mb-0">
+            <tbody>
+              <tr><td>Nitrogen (N)</td>    <td class="text-end">{{ N }} kg/ha</td></tr>
+              <tr><td>Phosphorus (P)</td>  <td class="text-end">{{ P }} kg/ha</td></tr>
+              <tr><td>Potassium (K)</td>   <td class="text-end">{{ K }} kg/ha</td></tr>
+              <tr><td>Temperature</td>     <td class="text-end">{{ temperature }} °C</td></tr>
+              <tr><td>Humidity</td>        <td class="text-end">{{ humidity }} %</td></tr>
+              <tr><td>pH Level</td>        <td class="text-end">{{ ph }}</td></tr>
+              <tr><td>Rainfall</td>        <td class="text-end">{{ rainfall }} mm</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <!-- ===================== END SECTION H ===================== -->
+
+
+      <!-- ===================== SECTION I — RIGHT COLUMN ===================== -->
+      <div class="col-lg-6">
+
+        <!-- What to do next -->
+        <div class="next-steps-card">
+          <p class="next-steps-title">🌾 Next Steps for {{ crop_name|capitalize }}</p>
+          <p class="next-steps-sub">पुढे काय करावे</p>
+
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <p class="step-text">Prepare your field with proper ploughing and remove previous crop residue.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <p class="step-text">Get a soil test done at your nearest Krishi Kendra for exact NPK needs.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <p class="step-text">Source certified seeds of {{ crop_name|capitalize }} from a trusted supplier.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <p class="step-text">Check local weather and sow at the right time for your season.</p>
+          </div>
+        </div>
+
+        <!-- Growing tips -->
+        <div class="tips-card">
+          <p class="tips-card-title">💡 Growing Tips</p>
+          <p class="result-subtitle mb-2" style="font-size:0.8rem;">शेती टिप्स</p>
+
+          <div class="tip-item">
+            <span class="tip-check">✔</span>
+            <span>Maintain balanced nutrients and monitor soil pH regularly.</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-check">✔</span>
+            <span>Check for pest and disease signs every week.</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-check">✔</span>
+            <span>Use drip irrigation to conserve water and avoid fungal issues.</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-check">✔</span>
+            <span>Follow local weather updates for smart field planning.</span>
+          </div>
+        </div>
+
+        <!-- Fertilizer CTA -->
+        <div class="fert-cta-box">
+          <p class="fert-cta-text mb-0">
+            💊 Want fertilizer advice for {{ crop_name|capitalize }}?
+          </p>
+          <a href="{{ url_for('fertilizer') }}" class="btn-fert-cta">
+            Get Fertilizer →
+          </a>
+        </div>
+
+      </div>
+      <!-- ===================== END SECTION I ===================== -->
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

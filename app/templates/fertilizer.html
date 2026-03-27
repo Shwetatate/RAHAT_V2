@@ -1,0 +1,540 @@
+{% extends "base.html" %}
+{% block title %}Fertilizer Recommendation — Rahat{% endblock %}
+
+
+{% block head_extra %}
+<style>
+
+  /* ===================== SECTION A — PAGE LAYOUT ===================== */
+  .fertilizer-page {
+    padding: 3rem 0;
+    background: #f8f9fa;
+    min-height: calc(100vh - 140px);
+  }
+
+  .page-title {
+    color: var(--primary-green);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .page-subtitle {
+    margin-bottom: 1.75rem;
+    color: #4c4c4c;
+  }
+
+  .fert-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    border: 1px solid rgba(45, 106, 79, 0.08);
+  }
+
+  .form-title {
+    font-weight: 700;
+    color: var(--dark);
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .form-subtitle {
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+    color: var(--primary-green);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+
+  .fert-label {
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .fert-form .form-control {
+    border-radius: 12px;
+    padding: 0.65rem 0.8rem;
+    border: 1.5px solid #dee2e6;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .fert-form .form-control:focus {
+    border-color: #F4A261;
+    box-shadow: 0 0 0 0.2rem rgba(244, 162, 97, 0.2);
+  }
+
+  .fert-form .form-text {
+    font-size: 0.8rem;
+  }
+
+  .btn-fertilizer-submit {
+    width: 100%;
+    background: #F4A261;
+    color: #1b1b1b;
+    border: none;
+    border-radius: 14px;
+    padding: 0.95rem 1rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 0.35rem;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-fertilizer-submit:hover {
+    background: #e8944a;
+    color: #1b1b1b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(244, 162, 97, 0.35);
+  }
+  /* ===================== END SECTION A ===================== */
+
+
+  /* ===================== SECTION B — INFO PANEL ===================== */
+  .info-panel {
+    background: #FFF8E7;
+    border-radius: 20px;
+    padding: 26px 22px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+    border: 1px solid rgba(244, 162, 97, 0.35);
+  }
+
+  .info-title {
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 0.2rem;
+  }
+
+  .info-sub {
+    font-family: "Noto Sans Devanagari", "Poppins", sans-serif;
+    color: var(--primary-green);
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+  }
+
+  .info-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #2b2b2b;
+  }
+
+  .tip-green {
+    background: #E8F5E9;
+    border: 1px solid rgba(45, 106, 79, 0.18);
+    border-radius: 14px;
+    padding: 0.85rem 0.95rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #2f4f3a;
+  }
+
+  /* Soil type guide grid */
+  .soil-guide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .soil-guide-card {
+    border-radius: 14px;
+    padding: 0.9rem 0.85rem;
+    font-weight: 700;
+    border: 1px solid rgba(0,0,0,0.06);
+    color: #1b1b1b;
+  }
+
+  .soil-guide-card small {
+    font-weight: 600;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 991.98px) {
+    .soil-guide { grid-template-columns: 1fr; }
+  }
+  /* ===================== END SECTION B ===================== */
+
+
+  /* ===================== SECTION C — WEATHER WIDGET ===================== */
+  .weather-widget-card {
+    background: linear-gradient(135deg, #FFF8E7, #FFF3CD);
+    border: 1px solid #F4A261;
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 1.25rem;
+  }
+
+  .weather-temp {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #E76F51;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .weather-condition {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  .weather-city {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #E76F51;
+    margin-top: 6px;
+    margin-bottom: 0;
+  }
+
+  .weather-stat {
+    font-size: 0.88rem;
+    color: #444;
+    margin-bottom: 3px;
+  }
+
+  .weather-autofill-badge {
+    font-size: 0.75rem;
+    color: #E76F51;
+    background: #FFE0CC;
+    border-radius: 8px;
+    padding: 2px 8px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  .weather-loading {
+    text-align: center;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+  }
+
+  .autofilled {
+    border-color: #F4A261 !important;
+    background: #FFF8F0 !important;
+  }
+  /* ===================== END SECTION C ===================== */
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ===================== SECTION D — PAGE HEADER + BREADCRUMB ===================== -->
+<section class="fertilizer-page">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav class="rahat-breadcrumb" aria-label="breadcrumb">
+      <a href="{{ url_for('index') }}">Home</a>
+      <span class="separator">›</span>
+      <span class="current">Fertilizer Recommendation</span>
+    </nav>
+
+    <!-- Page Title -->
+    <h1 class="page-title">Fertilizer Recommendation</h1>
+    <p class="form-subtitle">खत शिफारस</p>
+    <p class="page-subtitle">Enter soil and crop details to get fertilizer suggestion</p>
+  <!-- ===================== END SECTION D ===================== -->
+
+
+    <div class="row g-4">
+
+      <!-- ===================== SECTION E — FORM COLUMN ===================== -->
+      <div class="col-lg-7">
+        <div class="fert-card">
+          <h2 class="form-title">Soil &amp; Crop Details</h2>
+          <p class="form-subtitle">माती व पीक तपशील</p>
+
+          <!-- Error alert -->
+          {% if error %}
+          <div class="alert alert-danger py-2">{{ error }}</div>
+          {% endif %}
+
+          <!-- ===================== SECTION F — WEATHER WIDGET HTML ===================== -->
+          <!-- (auto fills temperature, humidity, moisture via GPS) -->
+
+          <!-- Loading spinner -->
+          <div id="weather-loading" class="weather-loading">
+            <div class="spinner-border spinner-border-sm text-warning" role="status"></div>
+            <span class="ms-2 text-muted" style="font-size:0.9rem;">
+              📍 Detecting your location & weather...
+            </span>
+          </div>
+
+          <!-- Weather card (hidden until data loads) -->
+          <div id="weather-widget" class="weather-widget-card" style="display:none;">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-3">
+                <img id="weather-icon" src="" width="55" height="55" alt="weather icon">
+                <div>
+                  <p class="weather-temp" id="weather-temp">--°C</p>
+                  <p class="weather-condition" id="weather-condition">--</p>
+                  <p class="weather-city" id="weather-city">📍 Detecting...</p>
+                </div>
+              </div>
+              <div class="text-end">
+                <div class="weather-stat">💧 Humidity: <strong id="weather-humidity">--%</strong></div>
+                <div class="weather-stat">🌱 Moisture: <strong id="weather-moisture">--%</strong></div>
+                <span class="weather-autofill-badge">✅ Auto-filled below</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Location denied warning -->
+          <div id="location-error" class="alert alert-warning py-2 mb-3"
+               style="display:none; border-radius:12px; font-size:0.9rem;">
+            📍 Location access denied. Please enter
+            Temperature, Humidity and Moisture manually.
+          </div>
+          <!-- ===================== END SECTION F ===================== -->
+
+
+          <!-- ===================== SECTION G — INPUT FORM ===================== -->
+          <form method="post" action="{{ url_for('fertilizer') }}" class="fert-form">
+            <div class="row g-3">
+
+              <!-- Temperature (auto-filled) -->
+              <div class="col-md-6">
+                <label class="fert-label" for="temperature">
+                  Temperature — तापमान
+                  <span id="temp-badge" class="weather-autofill-badge ms-1"
+                        style="display:none;">🌡️ Auto</span>
+                </label>
+                <input id="temperature" name="temperature" type="number"
+                       step="0.1" placeholder="e.g. 26"
+                       class="form-control" required>
+                <div class="form-text">°C</div>
+              </div>
+
+              <!-- Humidity (auto-filled) -->
+              <div class="col-md-6">
+                <label class="fert-label" for="humidity">
+                  Humidity — आर्द्रता
+                  <span id="humidity-badge" class="weather-autofill-badge ms-1"
+                        style="display:none;">💧 Auto</span>
+                </label>
+                <input id="humidity" name="humidity" type="number"
+                       step="0.1" placeholder="e.g. 52"
+                       class="form-control" required>
+                <div class="form-text">%</div>
+              </div>
+
+              <!-- Moisture (auto-calculated from humidity + rainfall) -->
+              <div class="col-md-6">
+                <label class="fert-label" for="moisture">
+                  Moisture — ओलावा
+                  <span id="moisture-badge" class="weather-autofill-badge ms-1"
+                        style="display:none;">🌱 Auto</span>
+                </label>
+                <input id="moisture" name="moisture" type="number"
+                       step="0.1" placeholder="e.g. 38"
+                       class="form-control" required>
+                <div class="form-text">%</div>
+              </div>
+
+              <!-- Soil Type -->
+              <div class="col-md-6">
+                <label class="fert-label" for="soil_type">Soil Type — मातीचा प्रकार</label>
+                <select id="soil_type" name="soil_type" class="form-control" required>
+                  <option value="Sandy">Sandy (वालुकामय)</option>
+                  <option value="Loamy">Loamy (चिकणमाती)</option>
+                  <option value="Black">Black (काळी माती)</option>
+                  <option value="Red">Red (लाल माती)</option>
+                  <option value="Clayey">Clayey (चिकणमाती)</option>
+                </select>
+              </div>
+
+              <!-- Crop Type -->
+              <div class="col-md-6">
+                <label class="fert-label" for="crop_type">Crop Type — पिकाचा प्रकार</label>
+                <select id="crop_type" name="crop_type" class="form-control" required>
+                  <option value="Maize">Maize</option>
+                  <option value="Sugarcane">Sugarcane</option>
+                  <option value="Cotton">Cotton</option>
+                  <option value="Tobacco">Tobacco</option>
+                  <option value="Paddy">Paddy</option>
+                  <option value="Barley">Barley</option>
+                  <option value="Wheat">Wheat</option>
+                  <option value="Millets">Millets</option>
+                  <option value="Oil seeds">Oil seeds</option>
+                  <option value="Pulses">Pulses</option>
+                  <option value="Ground Nuts">Ground Nuts</option>
+                </select>
+              </div>
+
+              <!-- Nitrogen -->
+              <div class="col-md-6">
+                <label class="fert-label" for="nitrogen">Nitrogen (N) — नत्र</label>
+                <input id="nitrogen" name="nitrogen" type="number"
+                       placeholder="e.g. 37" class="form-control" required>
+                <div class="form-text">kg/ha</div>
+              </div>
+
+              <!-- Potassium -->
+              <div class="col-md-6">
+                <label class="fert-label" for="potassium">Potassium (K) — पालाश</label>
+                <input id="potassium" name="potassium" type="number"
+                       placeholder="e.g. 0" class="form-control" required>
+                <div class="form-text">kg/ha</div>
+              </div>
+
+              <!-- Phosphorous -->
+              <div class="col-md-6">
+                <label class="fert-label" for="phosphorous">Phosphorous (P) — स्फुरद</label>
+                <input id="phosphorous" name="phosphorous" type="number"
+                       placeholder="e.g. 0" class="form-control" required>
+                <div class="form-text">kg/ha</div>
+              </div>
+
+              <!-- Submit -->
+              <div class="col-12">
+                <button type="submit" class="btn-fertilizer-submit">
+                  💊 Get Fertilizer Recommendation
+                </button>
+              </div>
+
+            </div>
+          </form>
+          <!-- ===================== END SECTION G ===================== -->
+
+        </div>
+      </div>
+      <!-- ===================== END SECTION E ===================== -->
+
+
+      <!-- ===================== SECTION H — INFO SIDEBAR ===================== -->
+      <div class="col-lg-5">
+        <div class="info-panel">
+          <h3 class="info-title">Why fertilizer matters</h3>
+          <p class="info-sub">खत का महत्त्वाचे आहे</p>
+
+          <div class="info-point">
+            <span>📍</span><span>Location auto detected for weather data</span>
+          </div>
+          <div class="info-point">
+            <span>🌱</span><span>Right fertilizer increases yield by 40%</span>
+          </div>
+          <div class="info-point">
+            <span>💧</span><span>Prevents soil nutrient depletion</span>
+          </div>
+          <div class="info-point" style="margin-bottom:0.75rem;">
+            <span>🌾</span><span>Improves crop quality and resistance</span>
+          </div>
+
+          <!-- Tip -->
+          <div class="tip-green">
+            💡 Tip: Over-fertilizing can damage crops.
+            Always follow recommended doses.
+          </div>
+
+          <!-- Soil types guide -->
+          <div class="mt-4">
+            <h4 class="h6 mb-3" style="font-weight:800; color:var(--dark);">
+              Soil types guide
+            </h4>
+            <div class="soil-guide">
+              <div class="soil-guide-card" style="background:#B0855A; color:#fff;">
+                <div>🟤 Sandy</div>
+                <small>well draining, low nutrients</small>
+              </div>
+              <div class="soil-guide-card" style="background:#C9A27A;">
+                <div>🟫 Loamy</div>
+                <small>ideal for most crops</small>
+              </div>
+              <div class="soil-guide-card" style="background:#111; color:#fff;">
+                <div>⬛ Black</div>
+                <small>high moisture retention</small>
+              </div>
+              <div class="soil-guide-card" style="background:#E63946; color:#fff;">
+                <div>🔴 Red</div>
+                <small>iron rich, low fertility</small>
+              </div>
+              <div class="soil-guide-card" style="background:#F9E27D;">
+                <div>🟡 Clayey</div>
+                <small>heavy, water retaining</small>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- ===================== END SECTION H ===================== -->
+
+    </div>
+  </div>
+</section>
+
+
+
+
+</section>
+
+{% endblock %}
+
+
+<!-- ===================== SECTION I — WEATHER GPS + API JAVASCRIPT ===================== -->
+{% block page_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const weatherWidget  = document.getElementById('weather-widget');
+  const weatherLoading = document.getElementById('weather-loading');
+  const locationError  = document.getElementById('location-error');
+
+  function calculateMoisture(humidity, rainfall) {
+    let moisture = humidity * 0.5;
+    if (rainfall > 0) moisture += rainfall * 2;
+    moisture = Math.min(90, Math.max(20, moisture));
+    return Math.round(moisture * 10) / 10;
+  }
+
+  function fillWeatherFields(weather) {
+    const tempField     = document.getElementById('temperature');
+    const humidityField = document.getElementById('humidity');
+    const moistureField = document.getElementById('moisture');
+    const moisture      = calculateMoisture(weather.humidity, weather.rainfall);
+    if (tempField) { tempField.value = weather.temperature; tempField.classList.add('autofilled'); document.getElementById('temp-badge').style.display = 'inline'; }
+    if (humidityField) { humidityField.value = weather.humidity; humidityField.classList.add('autofilled'); document.getElementById('humidity-badge').style.display = 'inline'; }
+    if (moistureField) { moistureField.value = moisture; moistureField.classList.add('autofilled'); document.getElementById('moisture-badge').style.display = 'inline'; }
+  }
+
+  function showWeatherWidget(weather) {
+    const moisture = calculateMoisture(weather.humidity, weather.rainfall);
+    document.getElementById('weather-temp').textContent      = weather.temperature + '°C';
+    document.getElementById('weather-condition').textContent = weather.condition;
+    document.getElementById('weather-city').textContent      = '📍 ' + weather.city + ', ' + weather.country;
+    document.getElementById('weather-humidity').textContent  = weather.humidity + '%';
+    document.getElementById('weather-moisture').textContent  = moisture + '%';
+    document.getElementById('weather-icon').src              = weather.icon_url;
+    weatherLoading.style.display = 'none';
+    weatherWidget.style.display  = 'block';
+    fillWeatherFields(weather);
+  }
+
+  function fetchWeather(lat, lon) {
+    fetch('/api/weather?lat=' + lat + '&lon=' + lon)
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.error) { weatherLoading.style.display = 'none'; locationError.style.display = 'block'; }
+        else { showWeatherWidget(data); }
+      })
+      .catch(function () { weatherLoading.style.display = 'none'; locationError.style.display = 'block'; });
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) { fetchWeather(position.coords.latitude, position.coords.longitude); },
+      function () { weatherLoading.style.display = 'none'; locationError.style.display = 'block'; },
+      { timeout: 10000 }
+    );
+  } else {
+    weatherLoading.style.display = 'none';
+    locationError.style.display  = 'block';
+  }
+});
+</script>
+{% endblock %}
+<!-- ===================== END SECTION I ===================== -->
