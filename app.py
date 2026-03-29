@@ -30,17 +30,25 @@ OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
 
 
 # =============================================================================
-# SECTION 2B — AUTO DOWNLOAD KERAS MODELS FROM GOOGLE DRIVE
-# (Runs on Render startup if models are missing)
-# To add more models: add to KERAS_MODELS dict below
+# SECTION 2B — AUTO DOWNLOAD ALL MODELS FROM GOOGLE DRIVE
 # =============================================================================
-KERAS_MODELS = {
+ALL_MODELS = {
+    "crop_label_encoder.pkl":    "1GDb-fndAhjIQyKGthpJ_Lbrb8npWgOG5",
+    "crop_model.pkl":            "1Ui_mNs4spt8dAmx4-SuS6gSf9NZP3KNO",
+    "crop_scaler.pkl":           "12Su4ozzrf7UCkm2BL-W37of2ix2akiDW",
+    "disease_class_info.pkl":    "1v5Hcw8Hj0hJ7pcIx1r4EnQz1bLkS71el",
+    "disease_class_labels.pkl":  "1bhgZ-TT_JfQEq7dzibLtETkkDVQ77n6H",
     "disease_model_final.keras": "1uhbA0wWV0Ts-pzvndRGGrCdwCYeDyeK-",
+    "fertilizer_le_crop.pkl":    "10QJcHiZEl5RgUkDkMh1EK65DBKu01Ot8",
+    "fertilizer_le_fertilizer.pkl": "1C6u8nPw5AfvbWayu96fU06nKjhIDrlpS",
+    "fertilizer_le_soil.pkl":    "1EaMMK3HZkogsESxSaHUt55Q60YuMVdNK",
+    "fertilizer_model.pkl":      "1UGvaXBsUtytAIf9HPcbNDig_daU3SEAK",
+    "fertilizer_scaler.pkl":     "1Zdz3636nQvDYzsQ3vUdWaAx_wTYQo6gl",
     "resnet50_finetuned.keras":  "1KGpP8zlS1NbY1_efBAj4ovs-HyavG7G_",
 }
 
 def download_models_if_missing() -> None:
-    """Download .keras models from Google Drive if not present locally."""
+    """Download all models from Google Drive if not present locally."""
     try:
         import gdown
     except ImportError:
@@ -49,7 +57,7 @@ def download_models_if_missing() -> None:
 
     os.makedirs(MODELS_DIR, exist_ok=True)
 
-    for filename, file_id in KERAS_MODELS.items():
+    for filename, file_id in ALL_MODELS.items():
         dest = os.path.join(MODELS_DIR, filename)
         if os.path.exists(dest):
             print(f"  ✅ Already exists: {filename}")
