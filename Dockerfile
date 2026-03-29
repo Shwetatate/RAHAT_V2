@@ -12,5 +12,6 @@ RUN mkdir -p app/static/uploads
 EXPOSE 7860
 
 ENV PORT=7860
+ENV PYTHONUNBUFFERED=1
 
-CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--timeout", "120", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--timeout", "300", "--workers", "1", "app:app"]
