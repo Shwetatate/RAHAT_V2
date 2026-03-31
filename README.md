@@ -78,7 +78,7 @@ The app supports both **English** and **Devanagari (Hindi/Marathi)** making it a
 ## 📸 Screenshots
 
 > Add screenshots of your app here after deployment
-> 
+>
 > Suggested screenshots:
 > - Home page
 > - Crop recommendation result
@@ -121,76 +121,6 @@ rahat-v2/
 
 ---
 
-## ⚙️ Local Installation
-
-### Prerequisites
-- Python 3.11
-- Git
-
-### Steps
-
-**1. Clone the repository**
-```bash
-git clone https://github.com/Shwetatate/RAHAT_V2.git
-cd RAHAT_V2
-```
-
-**2. Create virtual environment**
-```bash
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# Mac/Linux
-source venv/bin/activate
-```
-
-**3. Install dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-**4. Set up environment variables**
-
-Create a `.env` file in the root folder:
-```
-OPENWEATHER_API_KEY=your_openweathermap_api_key
-GROQ_API_KEY=your_groq_api_key
-RAHAT_SECRET_KEY=any_random_secret_string
-```
-
-**5. Run the app**
-```bash
-python app.py
-```
-
-Open `http://localhost:5000` in your browser.
-
-> **Note:** ML models will auto-download from Google Drive on first run. This may take a few minutes depending on your internet speed.
-
----
-
-## 🔑 API Keys Setup
-
-You need 2 free API keys to run this app:
-
-### 1. OpenWeatherMap API (Free)
-1. Go to [openweathermap.org](https://openweathermap.org/api)
-2. Sign up for a free account
-3. Go to **API Keys** tab
-4. Copy your default API key
-5. Add to `.env` as `OPENWEATHER_API_KEY`
-
-### 2. Groq AI API (Free)
-1. Go to [console.groq.com](https://console.groq.com)
-2. Sign up for a free account
-3. Go to **API Keys** → **Create API Key**
-4. Copy the key
-5. Add to `.env` as `GROQ_API_KEY`
-
----
-
 ## 🤖 ML Models
 
 | Model | Type | Purpose | Accuracy |
@@ -213,12 +143,7 @@ You need 2 free API keys to run this app:
 
 This app is deployed on **Hugging Face Spaces** using Docker.
 
-### Deploy your own copy
-1. Fork this repository
-2. Create a new Space on [huggingface.co](https://huggingface.co)
-3. Select **Docker** as SDK
-4. Push your code to the Space
-5. Add environment variables in Space Settings → Repository Secrets
+Models are stored on **Google Drive** and auto-downloaded at startup using `gdown`.
 
 ---
 
