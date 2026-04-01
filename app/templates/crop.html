@@ -250,12 +250,19 @@
             </div>
           </div>
 
+      
           <!-- Location denied warning -->
-          <div id="location-error" class="alert alert-warning py-2 mb-3"
-               style="display:none; border-radius:12px; font-size:0.9rem;">
-            📍 Location access denied. Please enter
-            Temperature, Humidity and Rainfall manually.
-          </div>
+<div id="location-error" class="alert alert-warning py-2 mb-3"
+     style="display:none; border-radius:12px; font-size:0.9rem;">
+  📍 Location access denied. Please enter
+  Temperature, Humidity and Rainfall manually,
+  or
+  <button onclick="retryLocation()" 
+          style="background:none; border:none; color:#2D6A4F; 
+                 font-weight:700; cursor:pointer; text-decoration:underline;">
+    click here to try again
+  </button>
+</div>
           <!-- ===================== END SECTION E ===================== -->
 
 
@@ -404,7 +411,6 @@
 {% endblock %}
 
 
- 
 {% block page_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -413,15 +419,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const weatherLoading = document.getElementById('weather-loading');
   const locationError  = document.getElementById('location-error');
 
+  /* --- Fill form inputs with fetched weather values --- */
   function fillWeatherFields(weather) {
     const tempField     = document.getElementById('temperature');
     const humidityField = document.getElementById('humidity');
     const rainfallField = document.getElementById('rainfall');
-    if (tempField) { tempField.value = weather.temperature; tempField.classList.add('autofilled'); document.getElementById('temp-badge').style.display = 'inline'; }
+    if (tempField)     { tempField.value = weather.temperature;  tempField.classList.add('autofilled');     document.getElementById('temp-badge').style.display = 'inline'; }
     if (humidityField) { humidityField.value = weather.humidity; humidityField.classList.add('autofilled'); document.getElementById('humidity-badge').style.display = 'inline'; }
     if (rainfallField) { rainfallField.value = weather.rainfall; rainfallField.classList.add('autofilled'); document.getElementById('rainfall-badge').style.display = 'inline'; }
   }
 
+  /* --- Render the weather widget card --- */
   function showWeatherWidget(weather) {
     document.getElementById('weather-temp').textContent      = weather.temperature + '°C';
     document.getElementById('weather-condition').textContent = weather.condition;
@@ -434,6 +442,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fillWeatherFields(weather);
   }
 
+  /* --- Call Flask weather API with coordinates --- */
   function fetchWeather(lat, lon) {
     fetch('/api/weather?lat=' + lat + '&lon=' + lon)
       .then(function (res) { return res.json(); })
@@ -444,6 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(function () { weatherLoading.style.display = 'none'; locationError.style.display = 'block'; });
   }
 
+  /* --- Request GPS from browser --- */
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       function (position) { fetchWeather(position.coords.latitude, position.coords.longitude); },
@@ -454,6 +464,23 @@ document.addEventListener('DOMContentLoaded', function () {
     weatherLoading.style.display = 'none';
     locationError.style.display  = 'block';
   }
+
+  /* --- Retry location after user denied --- */
+  window.retryLocation = function () {
+    locationError.style.display  = 'none';
+    weatherLoading.style.display = 'block';
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) { fetchWeather(position.coords.latitude, position.coords.longitude); },
+        function () { weatherLoading.style.display = 'none'; locationError.style.display = 'block'; },
+        { timeout: 10000 }
+      );
+    } else {
+      weatherLoading.style.display = 'none';
+      locationError.style.display  = 'block';
+    }
+  };
+
 });
 </script>
 {% endblock %}
